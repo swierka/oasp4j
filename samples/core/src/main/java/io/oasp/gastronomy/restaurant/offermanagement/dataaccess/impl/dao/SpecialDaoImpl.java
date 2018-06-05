@@ -2,9 +2,12 @@ package io.oasp.gastronomy.restaurant.offermanagement.dataaccess.impl.dao;
 
 import static com.querydsl.core.alias.Alias.$;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 import javax.inject.Named;
+
+import org.hibernate.mapping.List;
 
 import com.querydsl.core.alias.Alias;
 import com.querydsl.core.types.dsl.EntityPathBase;
@@ -40,7 +43,7 @@ public class SpecialDaoImpl extends ApplicationMasterDataDaoImpl<SpecialEntity> 
   }
 
   @Override
-  public List<SpecialEntity> findAciveSpecials(SpecialSearchCriteriaTo criteria) {
+  public List<SpecialEntity> findActiveSpecials(SpecialSearchCriteriaTo criteria) {
 
     SpecialEntity special = Alias.alias(SpecialEntity.class);
     WeeklyPeriodEmbeddable weeklyPeriodEmbeddable = Alias.alias(WeeklyPeriodEmbeddable.class);
@@ -59,18 +62,13 @@ public class SpecialDaoImpl extends ApplicationMasterDataDaoImpl<SpecialEntity> 
     }
 
     LocalDateTime dateOfChecking = criteria.getDateOfChecking();
-    if (dateOfChecking != null) {
+    DayOfWeek currentDayOfweek = dateOfChecking.getDayOfWeek();
+    int currentHour = dateOfChecking.getHour();
 
-      if (weeklyPeriodEmbeddable.getStartingDay().getValue() <= dateOfChecking.getDayOfWeek().getValue()
-          && weeklyPeriodEmbeddable.getEndingDay().getValue() >= dateOfChecking.getDayOfWeek().getValue()
-          && weeklyPeriodEmbeddable.getStartingHour() <= dateOfChecking.getHour()
-          && weeklyPeriodEmbeddable.getEndingHour() > dateOfChecking.getHour()) {
+    buildQueryForDateInActivePeriod(currentDayOfweek, currentHour, special, query);
 
-        query.where($(special.getOffer().getNumber()).eq(offerNumber));
-      }
-
-    }
-
-    return findAciveSpecials(criteria, query);
+    return query.fetch();
+    return null;
   }
+
 }
