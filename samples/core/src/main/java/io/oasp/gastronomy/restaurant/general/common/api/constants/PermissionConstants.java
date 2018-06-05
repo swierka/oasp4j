@@ -81,4 +81,13 @@ public abstract class PermissionConstants {
   /** {@link io.oasp.module.security.common.api.accesscontrol.AccessControlPermission} to remove table. */
   public static final String DELETE_TABLE = "DeleteTable";
   // END ARCHETYPE SKIP
+
+  public static final String DELETE_SPECIAL = "DeleteSpecial";
+  // END ARCHETYPE SKIP
+
+  public static final String FIND_SPECIAL = "FindSpecial";
+
+  public static final String SAVE_SPECIAL = "SaveSpecial";
+  // END ARCHETYPE SKIP
+
 }
